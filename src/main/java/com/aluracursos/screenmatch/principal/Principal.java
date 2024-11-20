@@ -57,8 +57,8 @@ public class Principal {
                         default:
                             System.out.println("Opción inválida");
                     }
-                }catch (Exception e){
-                    System.out.println("error tipo de dato...");
+                }catch (NumberFormatException e){
+                    System.out.println("error...");
                 }
 
             } //endwhile

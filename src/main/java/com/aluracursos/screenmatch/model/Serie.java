@@ -1,5 +1,6 @@
 package com.aluracursos.screenmatch.model;
 
+import com.aluracursos.screenmatch.service.ConsultaCHATGPTAPI;
 import com.fasterxml.jackson.annotation.JsonAlias;
 
 import java.util.OptionalDouble;
@@ -22,6 +23,7 @@ public class Serie {
             this.evaluacion= OptionalDouble.of(Double.valueOf(datosSerie.evaluacion())).orElse(0);
             this.actores= datosSerie.actores();
             this.sinopsis = datosSerie.sinopsis();
+            //this.sinopsis = ConsultaCHATGPTAPI.obtenerTraduccion(datosSerie.sinopsis()); no tengo premium de GPT....
             this.poster= datosSerie.poster();
             this.genero = Categoria.fromString(datosSerie.genero().split(",")[0].trim());
 
