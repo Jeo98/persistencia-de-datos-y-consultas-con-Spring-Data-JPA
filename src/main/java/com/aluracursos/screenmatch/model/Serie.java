@@ -2,17 +2,28 @@ package com.aluracursos.screenmatch.model;
 
 import com.aluracursos.screenmatch.service.ConsultaCHATGPTAPI;
 import com.fasterxml.jackson.annotation.JsonAlias;
+import jakarta.persistence.*;
 
 import java.util.OptionalDouble;
 
 import static com.aluracursos.screenmatch.model.Categoria.*;
+@Entity //esto indica que "Series" va a ser convertido en una tabla
+@Table(name = "series") // nombre de  la tabla de la base de datos
+
 
 public class Serie {
+    @Id //borro la parte de jakarta.persistence
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // genera la estrategia que va a generar automaticamente la IDENTIDAD del Id
 
+
+    private Long Id;
+    @Column(unique = true) // para que no se repita valores de titulo en la base de datos
     private String titulo;
     private Integer totalTemporadas;
     private Double evaluacion;
     private String poster;
+    @Enumerated(EnumType.STRING) // utilizo Enumerated por el tipo Enum de genero(enumeracion)
+    //pero en este caso utilizo String por si se modifica el Enum, evitando posibles problemas a futuro
     private Categoria genero;
     private String actores;
     private String sinopsis;
@@ -38,6 +49,14 @@ public class Serie {
                 ", ->genero=" + genero +
                 ", actores='" + actores + '\'' +
                 ", sinopsis='" + sinopsis + '\'';
+    }
+
+    public Long getId() {
+        return Id;
+    }
+
+    public void setId(Long id) {
+        Id = id;
     }
 
     public String getTitulo() {
