@@ -1,7 +1,6 @@
 package com.aluracursos.screenmatch.model;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
     @Entity
@@ -41,13 +40,14 @@ public class Episodio {
 
     }
 
-        public Serie getSerie() {
+    public Serie getSerie() {
             return serie;
         }
 
-        public void setSerie(Serie serie) {
+    public void setSerie(Serie serie) {
             this.serie = serie;
         }
+
     public Integer getTemporada() {
         return temporada;
     }

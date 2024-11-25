@@ -30,7 +30,7 @@ public class Serie {
     private String sinopsis;
     //el siguiente comando es para decirle a la base de datos que ignore el dato
     //@Transient
-    @OneToMany(mappedBy = "serie") //mapea la relacion serie episodio por medidio del atributo serie
+    @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch=FetchType.EAGER )   //mapea la relacion serie episodio por medidio del atributo serie
 
     private List<Episodio> episodios;
 
@@ -57,7 +57,8 @@ public class Serie {
                 ", poster='" + poster + '\'' +
                 ", ->genero=" + genero +
                 ", actores='" + actores + '\'' +
-                ", sinopsis='" + sinopsis + '\'';
+                ", sinopsis='" + sinopsis + '\''+
+                ", Episodios ='" + episodios  + '\'';
     }
 
     public Long getId() {
@@ -130,6 +131,7 @@ public class Serie {
     }
 
     public void setEpisodios(List<Episodio> episodios) {
+        episodios.forEach(e -> e.setSerie(this));
         this.episodios = episodios;
     }
 }
