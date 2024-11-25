@@ -8,7 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ScreenmatchApplication implements CommandLineRunner {
+public class 	ScreenmatchApplication implements CommandLineRunner {
 
 	@Autowired //inyeccion de dependencias de Spring
 	private SerieRepository repository; //una interfaz que conecta con base de dato
