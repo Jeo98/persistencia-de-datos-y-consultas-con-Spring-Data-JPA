@@ -4,6 +4,7 @@ import com.aluracursos.screenmatch.service.ConsultaCHATGPTAPI;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.OptionalDouble;
 
 import static com.aluracursos.screenmatch.model.Categoria.*;
@@ -12,11 +13,11 @@ import static com.aluracursos.screenmatch.model.Categoria.*;
 
 
 public class Serie {
+
     @Id //borro la parte de jakarta.persistence
     @GeneratedValue(strategy = GenerationType.IDENTITY) // genera la estrategia que va a generar automaticamente la IDENTIDAD del Id
-
-
     private Long Id;
+
     @Column(unique = true) // para que no se repita valores de titulo en la base de datos
     private String titulo;
     private Integer totalTemporadas;
@@ -27,7 +28,15 @@ public class Serie {
     private Categoria genero;
     private String actores;
     private String sinopsis;
+    //el siguiente comando es para decirle a la base de datos que ignore el dato
+    //@Transient
+    @OneToMany(mappedBy = "serie") //mapea la relacion serie episodio por medidio del atributo serie
 
+    private List<Episodio> episodios;
+
+    public Serie(){
+        //todas las clases deben tener constructor predeterminado
+    }
     public Serie(DatosSerie datosSerie){
             this.titulo= datosSerie.titulo();
             this.totalTemporadas= datosSerie.totalTemporadas();
@@ -58,6 +67,7 @@ public class Serie {
     public void setId(Long id) {
         Id = id;
     }
+
 
     public String getTitulo() {
         return titulo;
@@ -114,4 +124,13 @@ public class Serie {
     public void setSinopsis(String sinopsis) {
         this.sinopsis = sinopsis;
     }
+
+    public List<Episodio> getEpisodios() {
+        return episodios;
+    }
+
+    public void setEpisodios(List<Episodio> episodios) {
+        this.episodios = episodios;
+    }
 }
+
