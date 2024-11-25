@@ -2,13 +2,13 @@ package com.aluracursos.screenmatch.principal;
 
 import com.aluracursos.screenmatch.model.DatosSerie;
 import com.aluracursos.screenmatch.model.DatosTemporadas;
+import com.aluracursos.screenmatch.model.Episodio;
 import com.aluracursos.screenmatch.model.Serie;
+import com.aluracursos.screenmatch.repositorio.SerieRepository;
 import com.aluracursos.screenmatch.service.ConsumoAPI;
 import com.aluracursos.screenmatch.service.ConvierteDatos;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Principal {
@@ -18,7 +18,14 @@ public class Principal {
     private final String API_KEY = "&apikey=8eb50e5";
     private ConvierteDatos conversor = new ConvierteDatos();
     private List<DatosSerie> datosSeries = new ArrayList<>();
+    private SerieRepository repositorio;
+    private List<Serie> series;
 
+
+    public Principal(SerieRepository repository){
+        this.repositorio= repository;
+
+    }
     public void muestraElMenu() {
 
 
@@ -71,37 +78,59 @@ public class Principal {
     private DatosSerie getDatosSerie() {
         System.out.println("Escribe el nombre de la serie que deseas buscar");
         var nombreSerie = teclado.nextLine();
+
         var json = consumoApi.obtenerDatos(URL_BASE + nombreSerie.replace(" ", "+") + API_KEY);
         System.out.println(json);
         DatosSerie datos = conversor.obtenerDatos(json, DatosSerie.class);
         return datos;
     }
     private void buscarEpisodioPorSerie() {
-        DatosSerie datosSerie = getDatosSerie();
+        //DatosSerie datosSerie = getDatosSerie();
+        mostrarSeriesBuscadas();
+        System.out.println("Ingresar nombre de la Serie: ");
+        var nombreserie=teclado.nextLine();
+
+        Optional<Serie> serie = series.stream()
+                .filter(f -> f.getTitulo().toLowerCase().contains(nombreserie.toLowerCase()))
+                .findFirst();
+        if(serie.isPresent()){
+
+            var serieEncontrada= serie.get();
+
         List<DatosTemporadas> temporadas = new ArrayList<>();
 
-        for (int i = 1; i <= datosSerie.totalTemporadas(); i++) {
-            var json = consumoApi.obtenerDatos(URL_BASE + datosSerie.titulo().replace(" ", "+") + "&season=" + i + API_KEY);
+        for (int i = 1; i <= serieEncontrada.getTotalTemporadas(); i++) {
+            var json = consumoApi.obtenerDatos(URL_BASE + serieEncontrada.getTitulo().replace(" ", "+") + "&season=" + i + API_KEY);
             DatosTemporadas datosTemporada = conversor.obtenerDatos(json, DatosTemporadas.class);
             temporadas.add(datosTemporada);
         }
+
         temporadas.forEach(System.out::println);
+        List<Episodio> episodios = temporadas.stream()
+                .flatMap(d -> d.episodios().stream()
+                        .map(e ->new Episodio(d.numero(),e)))
+                .collect(Collectors.toList());
+        serieEncontrada.setEpisodios(episodios);
+        repositorio.save(serieEncontrada);
+
+        }
     }
     private void buscarSerieWeb() {
         DatosSerie datos = getDatosSerie(); //variable que almacena datos de la API tratados en getDatosSerie
-        datosSeries.add(datos); //guardo toda la lista de series en variable datos(que es lista tambien)...
+       Serie serie = new Serie(datos); //
+       repositorio.save(serie);//utilizo la funcion save de la interfaz para guardar los datos en base de datos(por eso comente la linea de abajo)
+        // datosSeries.add(datos); //guardo toda la lista de series en variable datos(que es lista tambien)...
         System.out.println(datos);
 
 
     }
     private void mostrarSeriesBuscadas() {
 
-            List<Serie> series =new ArrayList<>();
+            series = repositorio.findAll(); //funcion de spring que trae todos los datos de la base de datos
+        //en la documentacion esta toda la informacion de los metodos predeteminados --->
 
-            series = datosSeries.stream().map(s -> new Serie(s))
-                        .collect(Collectors.toList());
 
-            series.stream()
+                    series.stream()
                         .sorted(Comparator.comparing(Serie::getGenero))
                         .forEach(System.out::println);
 
@@ -110,4 +139,6 @@ public class Principal {
     }
 
 }
+
+
 
