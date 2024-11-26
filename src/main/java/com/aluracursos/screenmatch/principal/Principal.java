@@ -1,9 +1,6 @@
 package com.aluracursos.screenmatch.principal;
 
-import com.aluracursos.screenmatch.model.DatosSerie;
-import com.aluracursos.screenmatch.model.DatosTemporadas;
-import com.aluracursos.screenmatch.model.Episodio;
-import com.aluracursos.screenmatch.model.Serie;
+import com.aluracursos.screenmatch.model.*;
 import com.aluracursos.screenmatch.repositorio.SerieRepository;
 import com.aluracursos.screenmatch.service.ConsumoAPI;
 import com.aluracursos.screenmatch.service.ConvierteDatos;
@@ -40,6 +37,7 @@ public class Principal {
                             4 - Buscar serie por titulo
                             5 - Top 5 mejores series
                             6 - Buscar serie por categoria
+                            7 - Filtrar series por numeros de temporadas y evaluacion
                             0 - Salir
                             
                             ->
@@ -67,6 +65,9 @@ public class Principal {
                             break;
                         case 6:
                             buscarSeriePorCategoria();
+                            break;
+                        case 7:
+                            filtrarPorTemporada_Evaluacion();
                         case 0:
                             System.out.println("Cerrando la aplicación...");
                             break;
@@ -171,12 +172,29 @@ public class Principal {
 
     private void buscarSeriePorCategoria(){
         System.out.println("ingresar categoria de serie a buscar: ");
-        var  categoriaBuscada = teclado.nextLine();
-
-        List<Serie> seriesPorCategoria = repositorio.findByGenero(categoriaBuscada);
+        var  categoriaBuscada = teclado.nextLine(); //la categoria que usuario quiere
+        var categoria = Categoria.fromEspaniol(categoriaBuscada); //la paso por filtro de Enum(match si o no)
+        List<Serie> seriesPorCategoria = repositorio.findByGenero(categoria);
         System.out.println("series de categoria: " + categoriaBuscada);
-        seriesPorCategoria.forEach(s -> System.out.println(s.getTitulo()));
+        seriesPorCategoria.forEach(System.out::println);
     }
+
+    private void filtrarPorTemporada_Evaluacion(){
+
+        System.out.println("ingresar temporada a filtrar ");
+        int temporada = teclado.nextInt();
+        System.out.println("ingrese evaluacion ");
+        Double evaluacion = teclado.nextDouble();
+        List<Serie>seriesFiltradas = repositorio.findByTotalTemporadasLessThanEqualAndEvaluacionGreaterThanEqual(temporada,evaluacion);
+        seriesFiltradas.forEach(e -> System.out.println(e.getTitulo() + "|  Cantidad Temporadas: " + e.getTotalTemporadas() +
+                " Evaluacion: " + e.getEvaluacion()));
+
+
+    }
+
+
+
+
 }
 
 
