@@ -185,7 +185,8 @@ public class Principal {
         int temporada = teclado.nextInt();
         System.out.println("ingrese evaluacion ");
         Double evaluacion = teclado.nextDouble();
-        List<Serie>seriesFiltradas = repositorio.findByTotalTemporadasLessThanEqualAndEvaluacionGreaterThanEqual(temporada,evaluacion);
+        //List<Serie>seriesFiltradas = repositorio.findByTotalTemporadasLessThanEqualAndEvaluacionGreaterThanEqual(temporada,evaluacion);
+        List<Serie>seriesFiltradas =repositorio.seriesPorTemporadaYEvaluacion();
         seriesFiltradas.forEach(e -> System.out.println(e.getTitulo() + "|  Cantidad Temporadas: " + e.getTotalTemporadas() +
                 " Evaluacion: " + e.getEvaluacion()));
 
