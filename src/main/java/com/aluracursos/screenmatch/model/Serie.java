@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.OptionalDouble;
 
 import static com.aluracursos.screenmatch.model.Categoria.*;
